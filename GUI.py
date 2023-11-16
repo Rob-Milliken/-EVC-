@@ -1759,7 +1759,8 @@ with gr.Blocks(theme=gr.themes.Base()) as app:
                     with gr.Row():
                         dropbox = gr.File(label="Drop your audio here & hit the Reload button.")
                     with gr.Row():
-                        record_button=gr.Audio(source="microphone", label="OR Record audio.", type="filepath")
+                        #record_button=gr.Audio(source="microphone", label="OR Record audio.", type="filepath")
+                        record_button=gr.Audio(label="OR Record audio.", type="filepath")
                     with gr.Row():
                         input_audio0 = gr.Dropdown(
                             label="2.Choose your audio.",
@@ -1785,13 +1786,16 @@ with gr.Blocks(theme=gr.themes.Base()) as app:
                         with gr.Accordion('Wav2Lip', open=False):
                             with gr.Row():
                                 size = gr.Radio(label='Resolution:',choices=['Half','Full'])
-                                face = gr.UploadButton("Upload A Character",type='file')
+                                #face = gr.UploadButton("Upload A Character",type='file')
+                                # type should be either filepath or binary
+                                face = gr.UploadButton("Upload A Character",type='binary')
                                 faces = gr.Dropdown(label="OR Choose one:", choices=['None','Ben Shapiro','Andrew Tate'])
                             with gr.Row():
                                 preview = gr.Textbox(label="Status:",interactive=False)
                                 face.upload(fn=success_message,inputs=[face], outputs=[preview, faces])
                             with gr.Row():
-                                animation = gr.Video(type='filepath')
+                                #animation = gr.Video(type='filepath')
+                                animation = gr.Video()
                                 refresh_button2.click(fn=change_choices2, inputs=[], outputs=[input_audio0, animation])
                             with gr.Row():
                                 animate_button = gr.Button('Animate')
@@ -1870,7 +1874,8 @@ with gr.Blocks(theme=gr.themes.Base()) as app:
                             interactive=True,
                             )
                     with gr.Accordion("Fast-Mode (TESTING)", open=False):
-                        fast_audio = gr.Audio(label="As soon as you stop recording, inference will start.",type="filepath", source="microphone", autoplay=False)
+                        #fast_audio = gr.Audio(label="As soon as you stop recording, inference will start.",type="filepath", source="microphone", autoplay=False)
+                        fast_audio = gr.Audio(label="As soon as you stop recording, inference will start.",type="filepath", autoplay=False)
                         fast_result = gr.Audio(label="Result",type="filepath", autoplay=True)
                         
             with gr.Row():
@@ -1937,7 +1942,9 @@ with gr.Blocks(theme=gr.themes.Base()) as app:
                 """
                 )
                 
-        with gr.TabItem("Train", visible=False):
+        #with gr.TabItem("Train", visible=False):
+        with gr.TabItem("Train"):
+            visible=False
             with gr.Row():
                 with gr.Column():
                     exp_dir1 = gr.Textbox(label="Voice Name:", value="My-Voice")
@@ -2196,9 +2203,11 @@ with gr.Blocks(theme=gr.themes.Base()) as app:
 
                 
     if config.iscolab or config.paperspace: # Share gradio link for colab and paperspace (FORK FEATURE)
-        app.queue(concurrency_count=511, max_size=1022).launch(share=True, quiet=True)
+        #app.queue(concurrency_count=511, max_size=1022).launch(share=True, quiet=True)
+        app.queue(max_size=1022).launch(share=True, quiet=True)
     else:
-        app.queue(concurrency_count=511, max_size=1022).launch(
+        #app.queue(concurrency_count=511, max_size=1022).launch(
+        app.queue(max_size=1022).launch(
             server_name="0.0.0.0",
             inbrowser=not config.noautoopen,
             server_port=config.listen_port,
